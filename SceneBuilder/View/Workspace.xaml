@@ -1,0 +1,144 @@
+﻿<Page x:Class="SceneBuilder.View.Workspace"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:SceneBuilder.View"
+      xmlns:vm="clr-namespace:SceneBuilder.ViewModel"
+      mc:Ignorable="d" 
+      d:DesignHeight="600" d:DesignWidth="1000"
+      Title="Workspace">
+    <Page.Resources>
+        <local:PointsConventer x:Key="pointsConverter"/>
+        <local:PointToSquareConventer x:Key="pointToSquareConverter"/>
+        <local:ScreenConverter x:Key="screenConverter"/>
+        <local:ClippedPointsConventer x:Key="clippedConverter"/>
+    </Page.Resources>
+
+    <Page.DataContext>
+        <vm:WorkspaceVM/>
+    </Page.DataContext>
+
+    <Grid Background="LightGray">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <ItemsControl local:SizeObserver.Observe="True" local:SizeObserver.ObservedHeight="{Binding CanvasHeight, Mode=OneWayToSource}" local:SizeObserver.ObservedWidth="{Binding CanvasWidth, Mode=OneWayToSource}" ItemsSource="{Binding Triangles}" Grid.Row="0" Grid.Column="0" ClipToBounds="True" Margin="5,5,2.5,2.5">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Canvas Background="#FF141E22"/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Polygon Stroke="LightYellow" StrokeLineJoin="Bevel" StrokeThickness="1">
+                        <Polygon.Points>
+                            <MultiBinding Converter="{StaticResource pointsConverter}">
+                                <Binding Path="Points"/>
+                                <Binding Path="DataContext.PointsXY" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=ItemsControl}"/>
+                            </MultiBinding>
+                        </Polygon.Points>
+                    </Polygon>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+        <Canvas Grid.Row="0" Grid.Column="0" ClipToBounds="True" Margin="5,5,2.5,2.5" Background="Transparent">
+            <Polygon Points="{Binding ScreenXY, Converter={StaticResource screenConverter}}" Stroke="LightGreen" StrokeLineJoin="Bevel" StrokeThickness="1"/>
+            <Polygon local:DragAndDrop.Movable="True" local:DragAndDrop.Position="{Binding CameraOriginXY, Mode=TwoWay}" Points="{Binding CameraOriginXY, Converter={StaticResource pointToSquareConverter}}" Fill="LightPink"></Polygon>
+            <Polygon local:DragAndDrop.Movable="True" local:DragAndDrop.Position="{Binding ScreenCenterXY, Mode=TwoWay}" Points="{Binding ScreenCenterXY, Converter={StaticResource pointToSquareConverter}}" Fill="LightBlue"></Polygon>
+        </Canvas>
+        <ItemsControl ItemsSource="{Binding Triangles}" Grid.Row="0" Grid.Column="1" ClipToBounds="True" Margin="2.5,5,5,2.5">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Canvas Background="#FF141E22"/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Polygon Stroke="LightYellow" StrokeLineJoin="Bevel" StrokeThickness="1">
+                        <Polygon.Points>
+                            <MultiBinding Converter="{StaticResource pointsConverter}">
+                                <Binding Path="Points"/>
+                                <Binding Path="DataContext.PointsXZ" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=ItemsControl}"/>
+                            </MultiBinding>
+                        </Polygon.Points>
+                    </Polygon>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+        <Canvas Grid.Row="0" Grid.Column="1" ClipToBounds="True" Margin="2.5,5,5,2.5" Background="Transparent">
+            <Polygon Points="{Binding ScreenXZ, Converter={StaticResource screenConverter}}" StrokeLineJoin="Bevel" Stroke="LightGreen" StrokeThickness="1"/>
+            <Polygon local:DragAndDrop.Movable="True" local:DragAndDrop.Position="{Binding CameraOriginXZ, Mode=TwoWay}" Points="{Binding CameraOriginXZ, Converter={StaticResource pointToSquareConverter}}" Fill="LightPink"></Polygon>
+            <Polygon local:DragAndDrop.Movable="True" local:DragAndDrop.Position="{Binding ScreenCenterXZ, Mode=TwoWay}" Points="{Binding ScreenCenterXZ, Converter={StaticResource pointToSquareConverter}}" Fill="LightBlue"></Polygon>
+        </Canvas>
+        <ItemsControl ItemsSource="{Binding Triangles}" Grid.Row="1" Grid.Column="0" ClipToBounds="True" Margin="5,2.5,2.5,5">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Canvas Background="#FF141E22"/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Polygon Stroke="LightYellow" StrokeLineJoin="Bevel" StrokeThickness="1">
+                        <Polygon.Points>
+                            <MultiBinding Converter="{StaticResource pointsConverter}">
+                                <Binding Path="Points"/>
+                                <Binding Path="DataContext.PointsYZ" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=ItemsControl}"/>
+                            </MultiBinding>
+                        </Polygon.Points>
+                    </Polygon>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+        <Canvas Grid.Row="1" Grid.Column="0" ClipToBounds="True" Margin="5,2.5,2.5,5" Background="Transparent">
+            <Polygon Points="{Binding ScreenYZ, Converter={StaticResource screenConverter}}" StrokeLineJoin="Bevel" Stroke="LightGreen" StrokeThickness="1"/>
+            <Polygon local:DragAndDrop.Movable="True" local:DragAndDrop.Position="{Binding CameraOriginYZ, Mode=TwoWay}" Points="{Binding CameraOriginYZ, Converter={StaticResource pointToSquareConverter}}" Fill="LightPink"></Polygon>
+            <Polygon local:DragAndDrop.Movable="True" local:DragAndDrop.Position="{Binding ScreenCenterYZ, Mode=TwoWay}" Points="{Binding ScreenCenterYZ, Converter={StaticResource pointToSquareConverter}}" Fill="LightBlue"></Polygon>
+        </Canvas>
+        <ItemsControl ItemsSource="{Binding ClippedTriangles}" Grid.Row="1" Grid.Column="1" ClipToBounds="True" Margin="2.5,2.5,5,5">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Canvas Background="#FF141E22"/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Polygon Points="{Binding RelativeSource={RelativeSource Self}, Path=DataContext, Converter={StaticResource clippedConverter}}" Stroke="LightYellow" StrokeLineJoin="Bevel" StrokeThickness="1">
+                    </Polygon>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+        <Grid Grid.Row="2" Grid.ColumnSpan="2" Height="60" Background="#FF3A3A3A">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Label VerticalAlignment="Center" VerticalContentAlignment="Center"  FontSize="16" Foreground="White">1°</Label>
+                <Slider VerticalAlignment="Center" Grid.Column="1" Value="{Binding ViewAngle}" Minimum="1" Maximum="179"/>
+                <Label VerticalAlignment="Center" VerticalContentAlignment="Center" Grid.Column="2" Foreground="White" FontSize="16">179°</Label>
+            </Grid>
+            <Grid Grid.Column="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Button HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5" Padding="15,5" Click="SaveCam" BorderBrush="#FF141E22" BorderThickness="5" Foreground="#FF141E22" Background="LightGray" FontSize="16">SAVE CAM</Button>
+                <Button Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5" Padding="15,5" Click="LoadCam" BorderBrush="#FF141E22" BorderThickness="5" Foreground="#FF141E22" Background="LightGray" FontSize="16">LOAD CAM</Button>
+                <Button Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5" Padding="15,5" Click="LoadFile" BorderBrush="#FF141E22" BorderThickness="5" Foreground="#FF141E22" Background="LightGray" FontSize="16">LOAD SCENE</Button>
+            </Grid>
+        </Grid>
+    </Grid>
+</Page>
